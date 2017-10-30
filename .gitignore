@@ -1,3 +1,12 @@
 *.pyc
 pymatrix.egg-info/*
 .DS_Store
+/.idea/data-science-engineering-project.iml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/data/sample1.coo
+/.gitignore
+/*.gitignore

@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'Click',
+        'Click', 'numpy', 'scipy', 'sklearn',
     ],
     entry_points='''
         [console_scripts]

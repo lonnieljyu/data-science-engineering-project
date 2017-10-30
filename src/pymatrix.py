@@ -1,5 +1,9 @@
+import numpy as np
+from scipy.spatial.distance import pdist, euclidean
+from sklearn.metrics.pairwise import pairwise_distances, euclidean_distances
 import click
-from utils.parsing import parse_options
+from utils.parsing import parse_options, parse_command_line_input
+
 
 @click.group()
 def main():
@@ -30,7 +34,7 @@ def echo(n, **kwargs):
         click.echo(
             "\nThe given input was of type: %s\n"
             "And the value was: %s\n"
-            %(input_type, value) 
+            % (input_type, value)
         )
 
 
@@ -54,7 +58,12 @@ def closest_to(row_i, **kwargs):
     Output Format:\n
       i j [d_ij]
     """
-    pass
+
+    metric = 'euclidean'
+    is_sparse, matrix, include_distance = parse_command_line_input(**kwargs)
+    if matrix is None:
+        print('Invalid matrix input.')
+        return
 
 
 @click.command()
@@ -77,7 +86,10 @@ def closest(n, **kwargs):
     Output Format:\n
       i j [d_ij]
     """
-    pass
+    is_sparse, matrix, include_distance = parse_command_line_input(**kwargs)
+    if matrix is None:
+        print('Invalid matrix input.')
+        return
 
 
 @click.command()
@@ -100,7 +112,10 @@ def furthest(n, **kwargs):
     Output Format:\n
       i j [d_ij]
     """
-    pass
+    is_sparse, matrix, include_distance = parse_command_line_input(**kwargs)
+    if matrix is None:
+        print('Invalid matrix input.')
+        return
 
 
 @click.command()
@@ -118,8 +133,10 @@ def centroids(n_centroids, **kwargs):
     Cluster the given data set and return the N centroids,
     one for each cluster
     """
-    pass
-
+    is_sparse, matrix = parse_command_line_input(**kwargs)
+    if matrix is None:
+        print('Invalid matrix input.')
+        return
 
 main.add_command(echo)
 main.add_command(closest_to)
