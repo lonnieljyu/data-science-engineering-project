@@ -81,7 +81,7 @@ def get_matrix_from_coo(file_path):
     return sparse_matrix
 
 
-def parse_command_line_input(**kwargs):
+def parse_command_line_options(**kwargs):
     """
     Parses command line input and calls the relevant parsing function.
     Returns the is_sparse flag, the matrix, and the include_distance flag.
