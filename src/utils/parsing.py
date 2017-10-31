@@ -19,9 +19,11 @@ def parse_options(**kwargs):
 
 def get_matrix_from_json(value):
     """
-    Parses a json object, from the command line or a json file, and returns a dense numpy matrix.
-    :param value:
-    :return dense_matrix:
+    Parses a dense matrix from a json object.
+    :param string value: json object or json file path
+
+    :return dense_matrix: dense matrix representation
+    :rtype dense_matrix: numpy.array
     """
 
     if os.path.isfile(value):
@@ -34,9 +36,11 @@ def get_matrix_from_json(value):
 
 def get_matrix_from_csv(file_path):
     """
-    Parses a csv file and returns a dense numpy matrix.
-    :param file_path:
-    :return dense_matrix:
+    Parses a dense matrix from a csv file.
+    :param string file_path: local file path
+
+    :return dense_matrix: dense matrix representation
+    :rtype dense_matrix: numpy.array
     """
 
     dense_matrix = None
@@ -49,9 +53,11 @@ def get_matrix_from_csv(file_path):
 
 def get_matrix_from_pickle(file_path):
     """
-    Parses a pickle file and returns a dense numpy matrix.
-    :param file_path:
-    :return dense_matrix:
+    Parses a dense matrix from a pickle file.
+    :param string file_path: local file path
+
+    :return dense_matrix: dense matrix representation
+    :rtype dense_matrix: numpy.array
     """
 
     dense_matrix = None
@@ -63,9 +69,11 @@ def get_matrix_from_pickle(file_path):
 
 def get_matrix_from_coo(file_path):
     """
-    Parses a coo file and returns a sparse numpy matrix.
-    :param file_path:
-    :return sparse_matrix:
+    Parses a sparse matrix from a coo file.
+    :param string file_path: local file path
+
+    :return sparse_matrix: sparse matrix representation
+    :rtype sparse_matrix: scipy.sparse.coo_matrix
     """
 
     sparse_matrix = None
@@ -83,19 +91,23 @@ def get_matrix_from_coo(file_path):
 
 def parse_command_line_options(**kwargs):
     """
-    Parses command line input and calls the relevant parsing function.
-    Returns the is_sparse flag, the matrix, and the include_distance flag.
-    :param kwargs:
-    :return is_sparse, matrix, include_distance:
-    """
+    Parses matrix and command parameters from command-line options.
+    :param dict kwargs: command-line options as keyword, value pairs
 
+    :return bool is_sparse: flag stating if matrix is sparse
+
+    :return matrix: dense or sparse matrix representation
+    :rtype matrix: numpy.array or scipy.sparse.coo_matrix
+
+    :return bool include_distance: flag stating if command returns distance
+    """
     include_distance, input_type, value = False, None, None
     opts = [(k, v) for k, v in kwargs.items() if v is not None]
     for opt in opts:
         if opt[0] == 'distance':
             include_distance = True
         else:
-            input_type, value = opt[0], opt[1]
+            input_type, value = opt[0], str(opt[1])
 
     is_sparse, matrix = False, None
     if input_type == 'json_data':
