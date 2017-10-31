@@ -1,11 +1,23 @@
 1. What were some of the design decisions you made to improve the efficiency of at least one of the commands you implemented? Was there a particular algorithm or data structure that you decided to use?
 
+I decided to use the scipy and scikit-learn pairwise distance and k-means clustering implementations to optimize execution time. I kept the sparse matrices in sparse respresentations since computations on the dense representations take longer. I also chose to use mergesort to sort the pairwise distance matrices since it is better than quicksort in time complexity and is stable compared to heapsort. 
+
+If I want to optimize for space I would implement a pairwise distance calculation in a nested loop using a priority queue implemented with a heap. The nested loop would perform worse than the scipy and scikit-learn vectorized and optimized implementations but I would not have to store the pairwise distance matrix. I could improve heap performance by implementing a pairing or fibonacci heap instead of a binary heap.
+
 2. Suppose you had to use this tool on a huge csv file that was too big to fit in memory, how would you have to change your implementation, if at all, to handle this?
+
+Instead of loading the entire csv file into the memory of one machine, I would load the file into a distributed dataset across multiple nodes like in Spark or into multiple files in a distributed file system like HDFS. I would have to implement a distributed pairwise distance calculation in a MapReduce fashion, distributing the rows among the nodes such that all pair combinations are evaluated only once in the entire cluster. I would also have to implement a distributed k-means clustering algorithm, mapping the rows to the initial centroids and reducing by cluster to get the means.
 
 3. If our dataset was very wide (a lot of columns) and we didn't care about the exact distance between points, we only wanted to find one row in the data set that is close to a given query point or a list of query points, how could you do this efficiently in terms of memory/computation? 
 
+I would use an approximate k-nearest neighbor (kNN) algorithm such as locality-sensitive hashing (LSH). The approximate kNN reduces the number of distance calculations reducing the computation and memory required. 
+
 4. Is there anything you would like to share or point out from your solution? An awesome pythonic code snippet used? A cool feature/option/argument/command you added? A rant about why python is terrible/amazing? 
 
+The functions in utils.distance.py have different implementations for dense and sparse matrices. The sorting by argsort is pythonic as well as the nested list expression in the csv parser. It is very easy to parse different data formats in Python but it is not as performant as a strongly-typed, functional language like Scala, which can be even more concise than Python.
+
 5. Do you have a github account you can share or a code sample of another project you are proud of?
+github.com/lonnieljyu
 
 6. What's your favorite open source project? 
+github.com/apache/spark
