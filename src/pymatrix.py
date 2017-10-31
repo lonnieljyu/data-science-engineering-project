@@ -1,6 +1,7 @@
 import click
-from utils.distance import get_pairwise_distances_matrix, get_row_pair_output, get_row_minimal_to_target_row
 from utils.parsing import parse_options, parse_command_line_options
+from utils.distance import get_pairwise_distances_matrix, get_row_pair_output, get_row_minimal_to_target_row, \
+    get_centroids
 
 
 @click.group()
@@ -155,10 +156,18 @@ def centroids(n_centroids, **kwargs):
     Cluster the given data set and return the N centroids,
     one for each cluster
     """
-    is_sparse, matrix = parse_command_line_options(**kwargs)
+    is_sparse, matrix, include_distance = parse_command_line_options(**kwargs)
     if matrix is None:
         print('Invalid matrix input.')
         return
+    number_of_rows = max(matrix.row) + 1 if is_sparse else matrix.shape[0]
+    if n_centroids <= 0 or n_centroids > number_of_rows:
+        print('Invalid n_centroids input: ' + str(n_centroids))
+        return
+
+    cluster_centers = get_centroids(matrix, n_centroids)
+    for i in xrange(cluster_centers.shape[0]):
+        print cluster_centers[i]
 
 
 main.add_command(echo)

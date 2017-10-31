@@ -2,12 +2,13 @@ import sys
 import numpy as np
 from scipy.spatial.distance import pdist, euclidean
 from sklearn.metrics.pairwise import pairwise_distances
+from sklearn.cluster import KMeans
 
 """
 Utility functions for calculating pairwise distances
 """
 
-# Define metric, sorting, decimal precision constant variables
+# Define distance metric, sorting type, decimal precision constant variables
 DISTANCE_METRIC = 'euclidean'
 SORT_TYPE = 'mergesort'
 DECIMAL_PRECISION = 5
@@ -15,7 +16,7 @@ DECIMAL_PRECISION = 5
 
 def get_pairwise_distances_matrix(is_sparse, matrix):
     """
-    Calculates the pairwise distance matrix.
+    Calculates and sorts the pairwise distance matrix by distance.
     :param bool is_sparse: flag stating if matrix is sparse
 
     :param matrix: dense or sparse matrix representation
@@ -84,3 +85,18 @@ def get_row_pair_output(paired_distance, include_distance):
     if include_distance:
         output_string += str(round(paired_distance[2], DECIMAL_PRECISION))
     return output_string
+
+
+def get_centroids(matrix, n_centroids):
+    """
+    Gets the centroids after clustering the matrix with k-means
+    :param matrix: dense or sparse matrix representation
+    :type matrix: numpy.array or scipy.sparse.coo_matrix
+
+    :param int n_centroids: target number of centroids
+
+    :return kmeans.cluster_centers_: matrix of the centroid vectors
+    :rtype kmeans.cluster_centers_: numpy.array
+    """
+    kmeans = KMeans(n_clusters=n_centroids).fit(matrix)
+    return kmeans.cluster_centers_
