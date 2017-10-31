@@ -74,14 +74,14 @@ def closest_to(row_i, **kwargs):
     # Calculate the minimum row distance and the corresponding row index
     minimum_row_j, minimum_distance = -1, sys.maxint
     if not is_sparse:
-        for j in xrange(matrix.shape[0]):
-            if row_i == j: continue
-            distance = euclidean(matrix[j], matrix[row_i])
+        for row_j in xrange(matrix.shape[0]):
+            if row_i == row_j: continue
+            distance = euclidean(matrix[row_j], matrix[row_i])
             if distance < minimum_distance:
-                minimum_row_j, minimum_distance = j, distance
+                minimum_row_j, minimum_distance = row_j, distance
     else:
         # Build pairwise distance matrix from the sparse matrix and sort by minimum distance
-        paired_distances = pairwise_distances(matrix)
+        paired_distances = pairwise_distances(matrix, metric=DISTANCE_METRIC)
         row_indices, column_indices = np.triu_indices(paired_distances.shape[0], 1)
         paired_distances = np.column_stack((row_indices, column_indices, paired_distances[row_indices, column_indices]))
         paired_distances = paired_distances[paired_distances[:,2].argsort(kind=SORT_TYPE)]
@@ -126,10 +126,35 @@ def closest(n, **kwargs):
     Output Format:\n
       i j [d_ij]
     """
+    # Set metric, sorting, decimal precision parameters
+    DISTANCE_METRIC = 'euclidean'
+    SORT_TYPE = 'mergesort'
+    DECIMAL_PRECISION = 5
+
+    # Get matrix and include_distance parameters
     is_sparse, matrix, include_distance = parse_command_line_options(**kwargs)
     if matrix is None:
         print('Invalid matrix input.')
         return
+
+    # Build pairwise distance matrix and sort by minimum distance
+    if not is_sparse:
+        paired_distances = pdist(matrix, metric=DISTANCE_METRIC)
+        row_indices, column_indices = np.triu_indices(matrix.shape[0], 1)
+        paired_distances = np.column_stack((row_indices, column_indices, paired_distances))
+        paired_distances = paired_distances[paired_distances[:, 2].argsort(kind=SORT_TYPE)]
+    else:
+        paired_distances = pairwise_distances(matrix)
+        row_indices, column_indices = np.triu_indices(paired_distances.shape[0], 1)
+        paired_distances = np.column_stack((row_indices, column_indices, paired_distances[row_indices, column_indices]))
+        paired_distances = paired_distances[paired_distances[:, 2].argsort(kind=SORT_TYPE)]
+
+    # Build and print output strings
+    for i in xrange(n):
+        output_string = str(int(paired_distances[i][0])) + ' ' + str(int(paired_distances[i][1])) + ' '
+        if include_distance:
+            output_string += str(round(paired_distances[i][2], DECIMAL_PRECISION))
+        print output_string
 
 
 @click.command()
